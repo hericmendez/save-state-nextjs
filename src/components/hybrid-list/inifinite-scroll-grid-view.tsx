@@ -1,0 +1,106 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import CustomContextMenu from "./context-menu";
+import { BaseItem, ContextMenuItemType } from "./types";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+interface Props {
+  data: BaseItem[];
+  selectedKeys: React.Key[];
+  toggle: (item: BaseItem) => void;
+  contextMenu: (item: BaseItem) => ContextMenuItemType[];
+  batchSize?: number;
+}
+
+export default function InfiniteGridView({
+  data,
+  selectedKeys,
+  toggle,
+  contextMenu,
+  batchSize = 12,
+}: Props) {
+  const [visibleCount, setVisibleCount] = useState(batchSize);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  // reset quando o dataset muda (busca, ordenação etc.)
+  useEffect(() => {
+    setVisibleCount(batchSize);
+  }, [data, batchSize]);
+
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount(v =>
+            Math.min(v + batchSize, data.length)
+          );
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(sentinelRef.current);
+
+    return () => observer.disconnect();
+  }, [data.length, batchSize]);
+
+  const visibleData = data.slice(0, visibleCount);
+  console.log("visibleData ==> ", visibleData.length);
+
+  return (
+    <>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {visibleData.map(item => {
+          const selected = selectedKeys.includes(item.key);
+console.log("render item", item.key);
+          return (
+            <CustomContextMenu key={item.key} items={contextMenu(item)}>
+              <div
+                onClick={() => toggle(item)}
+                className={`relative cursor-pointer rounded overflow-hidden border
+                  ${selected ? "border-primary" : "border-muted"}`}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={400}
+                  height={600}
+                  className="object-cover"
+                />
+
+                <div className="absolute bottom-0 w-full bg-black/70 p-2 text-white text-sm">
+                  {item.name}
+                </div>
+
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="absolute top-2 right-2"
+                >
+                  {selected ? "✓" : "+"}
+                </Button>
+              </div>
+            </CustomContextMenu>
+          );
+        })}
+      </div>
+
+      {/* sentinela */}
+      {visibleCount < data.length && (
+        <div ref={sentinelRef} className="h-10" />
+      )}
+    </>
+  );
+}
