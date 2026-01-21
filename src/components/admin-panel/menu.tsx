@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Ellipsis, LogOut } from "lucide-react";
+import { Ellipsis, GamepadIcon, LogOut } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
@@ -16,6 +16,9 @@ import {
   TooltipProvider
 } from "@/components/ui/tooltip";
 import { useAuthStore } from "@/stores/useAuthStore";
+import { SidebarSection } from "./sidebar-section";
+import { GameListsMenuSection } from "../game-lists-menu/game-lists-menu-section";
+import { NewListButton } from "../game-lists-menu/new-list-button";
 
 
 interface MenuProps {
@@ -115,6 +118,16 @@ export function Menu({ isOpen }: MenuProps) {
               )}
             </li>
           ))}
+          <li className="w-full pt-5">
+            <SidebarSection
+              icon={GamepadIcon}
+              label="Game Lists"
+              isOpen={isOpen}
+            >
+              <GameListsMenuSection isOpen={isOpen} />
+              <NewListButton isOpen={isOpen} />
+            </SidebarSection>
+          </li>
           <li className="w-full grow flex items-end">
             <TooltipProvider disableHoverableContent>
               <Tooltip delayDuration={100}>

@@ -4,9 +4,9 @@
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from "@/components/ui/table";
-import CustomContextMenu from "./context-menu";
-import { BaseItem, Field, ContextMenuItemType } from "./types";
-
+import CustomContextMenu from "../context-menu";
+import { BaseItem, Field } from "./types";
+import { ContextMenuItemType } from "../context-menu/types";
 interface Props {
   data: BaseItem[];
   fields: Field[];

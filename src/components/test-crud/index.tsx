@@ -39,8 +39,7 @@ export default function TestCrudPage() {
     loadGames();
     loadLists();
   }, [loadGames, loadLists]);
-  console.log("lists ==> ", lists);
-   console.log("games ==> ", games);
+
   return (
     <div style={{ padding: 32, maxWidth: 900 }}>
       <h1>🧪 Test CRUD (Game / Lists)</h1>

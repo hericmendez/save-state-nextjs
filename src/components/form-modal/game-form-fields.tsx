@@ -1,4 +1,4 @@
-// src/components/form-modal/test-form-fields.tsx
+//src/app/(app)/game/details/page.tsx
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
@@ -34,25 +34,46 @@ import {
 import { useGamesStore } from "@/stores/useGamesStore";
 import { useGameListsStore } from "@/stores/useGameListsStore";
 import { useEffect, useState } from "react";
-import { Label } from "@/components/ui/label";
-import { useFormContext } from "react-hook-form";
-import { gameFormSchema } from "./form-props";
-type FormData = z.infer<typeof gameFormSchema>;
 
-export function TestFormFields() {
-  const { control } = useFormContext<FormData>();
+const formSchema = z.object({
+  game_data: z.object({
+    id: z.number(),
+    name: z.string().min(1, "Nome do jogo é obrigatório."),
+    summary: z.string().optional(),
+    release_date: z.string().optional(),
+    developers: z.string().optional(),
+    total_rating: z.number().min(0).max(100).optional(),
+    cover: z.string().url().optional()
+  }),
+
+  player_data: z.object({
+    status: z.string(),
+    hours_played: z.number().min(0, "Horas jogadas não pode ser negativo."),
+    rating: z.number().min(0).max(10).optional(),
+    review: z.string().max(500).optional()
+  })
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+export default function GameForm() {
   const { lists, loadLists } = useGameListsStore();
+
+  const [selectedListId, setSelectedListId] = useState("");
+  const params = useParams();
+  const router = useRouter();
 
   useEffect(() => {
     loadLists();
   }, [loadLists]);
 
-  const [selectedListId, setSelectedListId] = useState("");
+  const gameId = params?.gameId;
+
   return (
     <>
       <Controller
         name="game_data.name"
-        control={control}
+        control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel>Nome do jogo</FieldLabel>
@@ -64,7 +85,7 @@ export function TestFormFields() {
 
       <Controller
         name="game_data.id"
-        control={control}
+        control={form.control}
         render={({ field }) => (
           <Field className="hidden">
             <FieldLabel>ID do jogo (IGDB)</FieldLabel>
@@ -79,7 +100,7 @@ export function TestFormFields() {
       />
       <Controller
         name="game_data.release_date"
-        control={control}
+        control={form.control}
         render={({ field }) => (
           <Field>
             <FieldLabel>Ano de lançamento</FieldLabel>
@@ -99,7 +120,7 @@ export function TestFormFields() {
 
       <Controller
         name="game_data.total_rating"
-        control={control}
+        control={form.control}
         render={({ field }) => (
           <Field>
             <FieldLabel>Nota geral (0–100)</FieldLabel>
@@ -120,7 +141,7 @@ export function TestFormFields() {
 
       <Controller
         name="game_data.cover"
-        control={control}
+        control={form.control}
         render={({ field }) => (
           <Field>
             <FieldLabel>URL da capa</FieldLabel>
@@ -131,7 +152,7 @@ export function TestFormFields() {
 
       <Controller
         name="game_data.summary"
-        control={control}
+        control={form.control}
         render={({ field }) => (
           <Field>
             <FieldLabel>Resumo</FieldLabel>
@@ -152,7 +173,7 @@ export function TestFormFields() {
 
       <Controller
         name="player_data.status"
-        control={control}
+        control={form.control}
         render={({ field }) => (
           <Field>
             <FieldLabel>Status</FieldLabel>
@@ -171,7 +192,7 @@ export function TestFormFields() {
 
       <Controller
         name="player_data.hours_played"
-        control={control}
+        control={form.control}
         render={({ field, fieldState }) => (
           <Field data-invalid={fieldState.invalid}>
             <FieldLabel>Horas jogadas</FieldLabel>
@@ -189,7 +210,7 @@ export function TestFormFields() {
 
       <Controller
         name="player_data.rating"
-        control={control}
+        control={form.control}
         render={({ field }) => (
           <Field>
             <FieldLabel>Sua nota (0–10)</FieldLabel>
@@ -212,7 +233,7 @@ export function TestFormFields() {
 
       <Controller
         name="player_data.review"
-        control={control}
+        control={form.control}
         render={({ field }) => (
           <Field>
             <FieldLabel>Review pessoal</FieldLabel>

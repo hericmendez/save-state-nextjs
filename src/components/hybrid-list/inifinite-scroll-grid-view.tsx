@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import CustomContextMenu from "./context-menu";
-import { BaseItem, ContextMenuItemType } from "./types";
+import CustomContextMenu from "../context-menu";
+import { BaseItem } from "./types";
+import { ContextMenuItemType } from "../context-menu/types";
+
 import {
   Select,
   SelectContent,

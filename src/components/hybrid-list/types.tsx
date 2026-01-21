@@ -14,9 +14,3 @@ export interface Field {
   dataIndex: keyof BaseItem;
 }
 
-export interface ContextMenuItemType {
-  key?: string | number;
-  label: string;
-  onClick?: () => void;
-  children?: ContextMenuItemType[];
-}

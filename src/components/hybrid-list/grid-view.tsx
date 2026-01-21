@@ -3,9 +3,9 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import CustomContextMenu from "./context-menu";
-import { BaseItem, ContextMenuItemType } from "./types";
-
+import CustomContextMenu from "../context-menu";
+import { BaseItem, Field } from "./types";
+import { ContextMenuItemType } from "../context-menu/types";
 interface Props {
   data: BaseItem[];
   selectedKeys: React.Key[];
