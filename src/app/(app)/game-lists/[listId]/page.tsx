@@ -15,19 +15,19 @@ import { useParams } from "next/navigation";
 import { useGameListsStore } from "@/stores/useGameListsStore";
 import { useGamesStore } from "@/stores/useGamesStore";
 
-export default function PlaceholderPage() {
-    const {
-    lists,
-  } = useGameListsStore();
+export default function PlaceholderPage({
+  params
+}: {
+  params: Record<string, string>;
+}) {
+  const { lists } = useGameListsStore();
 
-    const {
-      games,
-    } = useGamesStore();
-  const {listId} = useParams()
-  console.log("listId ==> ", listId);
-            const list = lists.find(l => l._id === listId);
-            console.log("list ==> ", list);
-              if (!list) return null;
+  const { games } = useGamesStore();
+  const { listId } = useParams();
+  console.log("listId ==> ", params?.listId);
+  const list = lists.find((l) => l._id === listId);
+  console.log("list ==> ", list);
+  if (!list) return null;
   return (
     <ContentLayout title={list?.name || "Game List"}>
       <Breadcrumb>
@@ -39,7 +39,9 @@ export default function PlaceholderPage() {
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbPage>{list?.name} ({list.gamesCount})</BreadcrumbPage>
+            <BreadcrumbPage>
+              {list?.name} ({list.gamesCount})
+            </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>

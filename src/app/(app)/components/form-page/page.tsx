@@ -1,20 +1,18 @@
 // src/app/(app)/components/form-page/page.tsx
-"use client"
+"use client";
 
-import { z } from "zod"
-import { FormProvider } from "react-hook-form"
-import useFormModal from "@/hooks/use-form-modal"
-import { TestFormFields } from "@/components/form-modal/test-form-fields"
-import { Button } from "@/components/ui/button"
-import { FieldGroup } from "@/components/ui/field"
+import { z } from "zod";
+import { FormProvider } from "react-hook-form";
+import useFormModal from "@/hooks/use-form-modal";
+import BacklogFormFields from "@/components/form-modal/backlog-form-fields";
+import { Button } from "@/components/ui/button";
+import { FieldGroup } from "@/components/ui/field";
 
 const formSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
   platform: z.string().optional(),
-  progress: z.number().min(0).max(100),
-})
-
-type FormData = z.infer<typeof formSchema>
+  progress: z.number().min(0).max(100)
+});
 
 export default function NormalFormPage() {
   const formModal = useFormModal({
@@ -22,27 +20,25 @@ export default function NormalFormPage() {
     defaultValues: {
       name: "",
       platform: "",
-      progress: 0,
+      progress: 0
     },
     onSubmit: async (data) => {
-      console.log("SUBMIT PAGE:", data)
-      await new Promise((r) => setTimeout(r, 500))
+      console.log("SUBMIT PAGE:", data);
+      await new Promise((r) => setTimeout(r, 500));
     },
     onSuccess: () => {
-      console.log("Sucesso página normal")
-    },
-  })
+      console.log("Sucesso página normal");
+    }
+  });
 
   return (
     <div className="max-w-xl p-8">
-      <h1 className="text-xl font-semibold mb-6">
-        Página normal (sem modal)
-      </h1>
+      <h1 className="text-xl font-semibold mb-6">Página normal (sem modal)</h1>
 
       <FormProvider {...formModal.form}>
         <form onSubmit={formModal.submitProps.onSubmit}>
           <FieldGroup>
-            <TestFormFields />
+            <BacklogFormFields />
           </FieldGroup>
 
           <div className="flex gap-2 mt-6">
@@ -54,15 +50,12 @@ export default function NormalFormPage() {
               Resetar
             </Button>
 
-            <Button
-              type="submit"
-              disabled={formModal.submitProps.isSubmitting}
-            >
+            <Button type="submit" disabled={formModal.submitProps.isSubmitting}>
               Salvar
             </Button>
           </div>
         </form>
       </FormProvider>
     </div>
-  )
+  );
 }

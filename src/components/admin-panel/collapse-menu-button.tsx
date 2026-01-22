@@ -45,7 +45,7 @@ interface CollapseMenuButtonProps {
 export function CollapseMenuButton({
   icon: Icon,
   label,
-  active,
+  active, //não está sendo usado
   submenus,
   isOpen
 }: CollapseMenuButtonProps) {

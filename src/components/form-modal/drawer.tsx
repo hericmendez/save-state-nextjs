@@ -1,51 +1,46 @@
 // src/components/form-modal/drawer.tsx
-"use client"
+"use client";
 
-import { FormProvider } from "react-hook-form"
-import { Button } from "@/components/ui/button"
+import { FormProvider } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { FieldGroup } from "@/components/ui/field"
+  SheetTrigger
+} from "@/components/ui/sheet";
+import { FieldGroup } from "@/components/ui/field";
 
 type FormDrawerProps = {
-  buttonName: string
-  drawerTitle: string
+  buttonName: string;
+  drawerTitle: string;
 
   formModal: {
     dialogProps: {
-      open: boolean
-      onOpenChange: (open: boolean) => void
-    }
-    form: any
+      open: boolean;
+      onOpenChange: (open: boolean) => void;
+    };
+    form: any;
     submitProps: {
-      onSubmit: () => void
-      isSubmitting: boolean
-    }
+      onSubmit: () => void;
+      isSubmitting: boolean;
+    };
     cancelProps: {
-      onCancel: () => void
-    }
-  }
+      onCancel: () => void;
+    };
+  };
 
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 export function FormDrawer({
   buttonName,
   drawerTitle,
   formModal,
-  children,
+  children
 }: FormDrawerProps) {
-  const {
-    dialogProps,
-    form,
-    submitProps,
-    cancelProps,
-  } = formModal
+  const { dialogProps, form, submitProps, cancelProps } = formModal;
 
   return (
     <Sheet {...dialogProps}>
@@ -53,34 +48,34 @@ export function FormDrawer({
         <Button variant="outline">{buttonName}</Button>
       </SheetTrigger>
 
-      <SheetContent>
+      <SheetContent style={{ maxWidth: "50vw", overflowY: "auto" }}>
         <SheetHeader>
           <SheetTitle>{drawerTitle}</SheetTitle>
         </SheetHeader>
 
         <FormProvider {...form}>
-          <form onSubmit={submitProps.onSubmit}>
-            <FieldGroup>{children}</FieldGroup>
+          {" "}
+          <div>
+            <form onSubmit={submitProps.onSubmit}>
+              <FieldGroup>{children}</FieldGroup>
 
-            <div className="flex justify-end gap-2 mt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={cancelProps.onCancel}
-              >
-                Cancelar
-              </Button>
+              <div className="flex justify-end gap-2 mt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={cancelProps.onCancel}
+                >
+                  Cancelar
+                </Button>
 
-              <Button
-                type="submit"
-                disabled={submitProps.isSubmitting}
-              >
-                Salvar
-              </Button>
-            </div>
-          </form>
+                <Button type="submit" disabled={submitProps.isSubmitting}>
+                  Salvar
+                </Button>
+              </div>
+            </form>{" "}
+          </div>
         </FormProvider>
       </SheetContent>
     </Sheet>
-  )
+  );
 }

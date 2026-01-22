@@ -4,7 +4,7 @@
 import useFormModal from "@/hooks/use-form-modal";
 import FormDialog from "@/components/form-modal/dialog";
 import { FormDrawer } from "@/components/form-modal/drawer";
-import { TestFormFields } from "@/components/form-modal/test-form-fields";
+import BacklogFormFields from "@/components/form-modal/backlog-form-fields";
 import {
   defaultValues,
   gameFormSchema
@@ -42,7 +42,7 @@ export default function FormModalTestPage() {
         dialogTitle="Novo jogo (Dialog)"
         formModal={dialogForm}
       >
-        <TestFormFields />
+        <BacklogFormFields />
       </FormDialog>
 
       <FormDrawer
@@ -50,7 +50,7 @@ export default function FormModalTestPage() {
         drawerTitle="Editar jogo (Drawer)"
         formModal={drawerForm}
       >
-        <TestFormFields />
+        <BacklogFormFields />
       </FormDrawer>
     </div>
   );

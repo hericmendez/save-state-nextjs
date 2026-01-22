@@ -54,9 +54,9 @@ export function GameListMenuItem({
           <Input
             autoFocus
             value={value}
-            onChange={e => setValue(e.target.value)}
+            onChange={(e) => setValue(e.target.value)}
             onBlur={() => setEditing(false)}
-            onKeyDown={e => {
+            onKeyDown={(e) => {
               if (e.key === "Enter") save();
               if (e.key === "Escape") setEditing(false);
             }}

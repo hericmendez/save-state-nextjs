@@ -5,17 +5,24 @@ export const gameFormSchema = z.object({
     id: z.number(),
     name: z.string().min(1, "Nome do jogo é obrigatório."),
     summary: z.string().optional(),
-    release_date: z.string().optional(),
+    release_date: z.number().optional(),
     developers: z.string().optional(),
+    publishers: z.string().optional(),
     total_rating: z.number().min(0).max(100).optional(),
-    cover: z.string().url().optional()
+cover: z.object({
+  url: z.string().url(),
+  source: z.string(),
+  confidence: z.number().default(0.5)
+}).optional()
+
   }),
 
   player_data: z.object({
     status: z.string(),
     hours_played: z.number().min(0, "Horas jogadas não pode ser negativo."),
     rating: z.number().min(0).max(10).optional(),
-    review: z.string().max(500).optional()
+    review: z.string().max(500).optional(),
+    gameListId: z.string().optional()
   })
 });
 
@@ -25,8 +32,9 @@ export const defaultValues = {
     name: "zelda",
     release_date: "2020",
     developers: "",
+    publishers: "",
     total_rating: 100,
-    cover: "https://placehold.co/400/orange/white",
+    cover: undefined,
     summary: "Good Game - IGN"
   },
   player_data: {

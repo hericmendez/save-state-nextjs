@@ -1,3 +1,5 @@
+//app/placeholder/page.tsx
+
 import Link from "next/link";
 
 import PlaceholderContent from "@/components/demo/placeholder-content";
@@ -10,7 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-import { GameCoverSearchTest } from "@/components/game-cover-search-test";
+import GameCoverSearch from "@/components/game-cover-search-test";
 
 export default function PlaceholderPage() {
   return (
@@ -29,7 +31,7 @@ export default function PlaceholderPage() {
         </BreadcrumbList>
       </Breadcrumb>
       {/* <PlaceholderContent /> */}
-      <GameCoverSearchTest />
+      <GameCoverSearch />
     </ContentLayout>
   );
 }

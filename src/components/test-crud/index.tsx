@@ -13,16 +13,11 @@ export default function TestCrudPage() {
     updateGame,
     deleteGame,
     addGameToList,
-    removeGameFromList,
+    removeGameFromList
   } = useGamesStore();
 
-  const {
-    lists,
-    loadLists,
-    createList,
-    updateList,
-    deleteList,
-  } = useGameListsStore();
+  const { lists, loadLists, createList, updateList, deleteList } =
+    useGameListsStore();
 
   const [newListName, setNewListName] = useState("");
 
@@ -46,15 +41,13 @@ export default function TestCrudPage() {
 
       {/* CRIAÇÃO */}
       <section style={{ display: "flex", gap: 32 }}>
-        <div>
-
-        </div>
+        <div></div>
 
         <div>
           <h3>Criar Lista</h3>
           <input
             value={newListName}
-            onChange={e => setNewListName(e.target.value)}
+            onChange={(e) => setNewListName(e.target.value)}
             placeholder="Nome da lista"
           />
           <button
@@ -76,10 +69,10 @@ export default function TestCrudPage() {
 
       <select
         value={selectedGameId}
-        onChange={e => setSelectedGameId(e.target.value)}
+        onChange={(e) => setSelectedGameId(e.target.value)}
       >
         <option value="">Selecione um jogo</option>
-        {games.map(game => (
+        {games.map((game) => (
           <option key={game._id} value={game._id}>
             {game.game_data.name}
           </option>
@@ -88,10 +81,10 @@ export default function TestCrudPage() {
 
       <select
         value={selectedListId}
-        onChange={e => setSelectedListId(e.target.value)}
+        onChange={(e) => setSelectedListId(e.target.value)}
       >
         <option value="">Selecione uma lista</option>
-        {lists.map(list => (
+        {lists.map((list) => (
           <option key={list._id} value={list._id}>
             {list.name}
           </option>
@@ -114,13 +107,13 @@ export default function TestCrudPage() {
       {/* JOGOS */}
       <h2>Jogos</h2>
 
-      {games.map(game => (
+      {games.map((game) => (
         <div
           key={game._id}
           style={{
             border: "1px solid #ccc",
             padding: 12,
-            marginBottom: 12,
+            marginBottom: 12
           }}
         >
           {/* NOME */}
@@ -128,7 +121,7 @@ export default function TestCrudPage() {
             <>
               <input
                 value={editingGameName}
-                onChange={e => setEditingGameName(e.target.value)}
+                onChange={(e) => setEditingGameName(e.target.value)}
               />
               <button
                 onClick={() => {
@@ -158,19 +151,14 @@ export default function TestCrudPage() {
           <div style={{ marginTop: 8 }}>
             Listas:
             {game.player_data.listIds?.length === 0 && " nenhuma"}
-
-            {game.player_data.listIds?.map(listId => {
-              const list = lists.find(l => l._id === listId);
+            {game.player_data.listIds?.map((listId) => {
+              const list = lists.find((l) => l._id === listId);
               if (!list) return null;
 
               return (
                 <span key={listId} style={{ marginLeft: 8 }}>
                   {list.name}
-                  <button
-                    onClick={() =>
-                      removeGameFromList(game._id, listId)
-                    }
-                  >
+                  <button onClick={() => removeGameFromList(game._id, listId)}>
                     ❌
                   </button>
                 </span>
@@ -185,13 +173,13 @@ export default function TestCrudPage() {
       {/* LISTAS */}
       <h2>Listas</h2>
 
-      {lists.map(list => (
+      {lists.map((list) => (
         <div key={list._id} style={{ marginBottom: 8 }}>
           {editingListId === list._id ? (
             <>
               <input
                 value={editingListName}
-                onChange={e => setEditingListName(e.target.value)}
+                onChange={(e) => setEditingListName(e.target.value)}
               />
               <button
                 onClick={() => {

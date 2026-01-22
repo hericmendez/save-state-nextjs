@@ -67,23 +67,6 @@ export function getMenuList(pathname: string): Group[] {
               label: "CRUD"
             }
           ]
-        },
-        {
-          href: "/placeholder",
-          label: "Game Lists",
-          icon: GamepadIcon,
-          submenus: [
-            {
-              href: "#",
-              label: "Dummy List"
-            },
-/* Listas criadas pelo usuário serão injetadas aqui */
-
-            {
-              href: "#",
-              label: "+ New List"
-            }
-          ]
         }
       ]
     },

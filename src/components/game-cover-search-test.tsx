@@ -1,3 +1,4 @@
+//components/game-cover-search-test.tsx
 "use client";
 
 import { useState } from "react";
@@ -6,26 +7,41 @@ import { Button } from "@/components/ui/button";
 import clsx from "clsx";
 import { searchGameCoversClient } from "@/lib/cover-search/client";
 import type { CoverResult } from "@/lib/cover-search/types";
+type GameCoverSearchProps = {
+  query: string;
+  value?: {
+    url: string;
+    source: string;
+    confidence: number;
+  };
+  onChange: (cover: {
+    url: string;
+    source: string;
+    confidence: number;
+  }) => void;
+};
 
-export function GameCoverSearchTest() {
-  const [query, setQuery] = useState("");
+export default function GameCoverSearch({
+  query,
+  value,
+  onChange
+}: GameCoverSearchProps) {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<CoverResult[]>([]);
-  const [selected, setSelected] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const selectedUrl = value?.url;
+
   async function handleSearch() {
-    if (!query.trim()) return;
+    if (!query?.trim()) return;
 
     setLoading(true);
     setError(null);
-    setSelected(null);
 
     try {
       const data = await searchGameCoversClient(query);
       setResults(data);
-    } catch (err) {
-      console.error(err);
+    } catch {
       setError("Não foi possível buscar capas");
     } finally {
       setLoading(false);
@@ -34,16 +50,9 @@ export function GameCoverSearchTest() {
 
   return (
     <div className="grid gap-4 max-w-xl">
-      <div className="flex gap-2">
-        <Input
-          placeholder="Digite o nome do jogo"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <Button onClick={handleSearch} disabled={loading}>
-          {loading ? "Buscando..." : "Buscar capa"}
-        </Button>
-      </div>
+      <Button type="button" onClick={handleSearch} disabled={loading}>
+        {loading ? "Buscando..." : "Buscar capa"}
+      </Button>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
 
@@ -53,10 +62,16 @@ export function GameCoverSearchTest() {
             <button
               key={cover.id}
               type="button"
-              onClick={() => setSelected(cover.id)}
+              onClick={() =>
+                onChange({
+                  url: cover.url,
+                  source: cover.source,
+                  confidence: cover.confidence
+                })
+              }
               className={clsx(
                 "rounded-md overflow-hidden border transition",
-                selected === cover.id
+                selectedUrl === cover.url
                   ? "ring-2 ring-primary border-primary"
                   : "border-muted hover:border-foreground/40"
               )}
@@ -68,12 +83,6 @@ export function GameCoverSearchTest() {
               />
             </button>
           ))}
-        </div>
-      )}
-
-      {selected && (
-        <div className="text-sm text-muted-foreground">
-          Capa selecionada: {results.find((r) => r.id === selected)?.source}
         </div>
       )}
     </div>

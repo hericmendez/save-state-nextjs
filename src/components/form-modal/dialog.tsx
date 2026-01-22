@@ -1,52 +1,47 @@
 // src/components/form-modal/dialog.tsx
-"use client"
+"use client";
 
-import { FormProvider } from "react-hook-form"
-import { Button } from "@/components/ui/button"
+import { FormProvider } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { FieldGroup } from "@/components/ui/field"
+  DialogTrigger
+} from "@/components/ui/dialog";
+import { FieldGroup } from "@/components/ui/field";
 
 type FormDialogProps = {
-  buttonName: string
-  dialogTitle: string
+  buttonName: string;
+  dialogTitle: string;
 
   formModal: {
     dialogProps: {
-      open: boolean
-      onOpenChange: (open: boolean) => void
-    }
-    form: any
+      open: boolean;
+      onOpenChange: (open: boolean) => void;
+    };
+    form: any;
     submitProps: {
-      onSubmit: () => void
-      isSubmitting: boolean
-    }
+      onSubmit: () => void;
+      isSubmitting: boolean;
+    };
     cancelProps: {
-      onCancel: () => void
-    }
-  }
+      onCancel: () => void;
+    };
+  };
 
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
 export default function FormDialog({
   buttonName,
   dialogTitle,
   formModal,
-  children,
+  children
 }: FormDialogProps) {
-  const {
-    dialogProps,
-    form,
-    submitProps,
-    cancelProps,
-  } = formModal
+  const { dialogProps, form, submitProps, cancelProps } = formModal;
 
   return (
     <Dialog {...dialogProps}>
@@ -55,7 +50,7 @@ export default function FormDialog({
       </DialogTrigger>
 
       <DialogContent
-        className="sm:max-w-[600px]"
+        className="sm:max-w-[50vw] overflow-y-auto "
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
@@ -76,10 +71,7 @@ export default function FormDialog({
                 Cancelar
               </Button>
 
-              <Button
-                type="submit"
-                disabled={submitProps.isSubmitting}
-              >
+              <Button type="submit" disabled={submitProps.isSubmitting}>
                 Salvar
               </Button>
             </DialogFooter>
@@ -87,5 +79,5 @@ export default function FormDialog({
         </FormProvider>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
