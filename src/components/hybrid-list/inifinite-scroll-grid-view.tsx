@@ -1,3 +1,4 @@
+//src/app/components/hybrid-list/inifinite-scroll-grid-view.tsx
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -16,11 +17,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Game } from "@/types/Game";
 interface Props {
-  data: BaseItem[];
-  selectedKeys: React.Key[];
-  toggle: (item: BaseItem) => void;
-  contextMenu: (item: BaseItem) => ContextMenuItemType[];
+  data: Game[]
+  selectedKeys: React.Key[]
+  toggle: (item: Game) => void
+  contextMenu: (item: Game) => ContextMenuItemType[]
   batchSize?: number;
 }
 
@@ -65,25 +67,25 @@ export default function InfiniteGridView({
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {visibleData.map(item => {
-          const selected = selectedKeys.includes(item.key);
-console.log("render item", item.key);
+          const selected = selectedKeys.includes(item._id)
+          console.log("render item", item._id);
           return (
-            <CustomContextMenu key={item.key} items={contextMenu(item)}>
+            <CustomContextMenu key={item._id} items={contextMenu(item)}>
               <div
                 onClick={() => toggle(item)}
                 className={`relative cursor-pointer rounded overflow-hidden border
                   ${selected ? "border-primary" : "border-muted"}`}
               >
                 <Image
-                  src={item.image}
-                  alt={item.name}
+                  src={item.game_data.cover?.url}
+                  alt={item.game_data.name}
                   width={400}
                   height={600}
                   className="object-cover"
                 />
 
                 <div className="absolute bottom-0 w-full bg-black/70 p-2 text-white text-sm">
-                  {item.name}
+                  {item.game_data.name}
                 </div>
 
                 <Button

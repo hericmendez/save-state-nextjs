@@ -1,11 +1,11 @@
 // src/lib/cover-search/client.ts
-import type { CoverResult } from "@/lib/cover-search/types";
+import type { CoverResult } from "@/lib/scrapers/cover-search/types";
 
 export async function searchGameCoversClient(query: string) {
   const start = Date.now();
   // search
 
-  const res = await fetch("/api/cover-search", {
+  const res = await fetch("/api/scraper/cover-search", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

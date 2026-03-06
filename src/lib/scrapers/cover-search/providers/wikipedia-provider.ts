@@ -1,3 +1,5 @@
+//src/lib/cover-search/providers/wikipedia-provider.ts
+
 import * as cheerio from "cheerio";
 import { CoverResult } from "../types";
 

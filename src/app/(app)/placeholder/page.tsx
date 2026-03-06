@@ -30,8 +30,8 @@ export default function PlaceholderPage() {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      {/* <PlaceholderContent /> */}
-      <GameCoverSearch />
+      <PlaceholderContent />
+
     </ContentLayout>
   );
 }

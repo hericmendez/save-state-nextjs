@@ -1,4 +1,4 @@
-//src/app/components/hybrid-list/index.tsx
+// src/app/components/hybrid-list/index.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,9 +6,8 @@ import GridView from "./grid-view";
 import TableView from "./table-view";
 import InfiniteGridView from "./inifinite-scroll-grid-view";
 import VirtualizedGridView from "./virtualized-grid-view";
-import data from "./data.json";
 import { Button } from "@/components/ui/button";
-import { BaseItem, Field } from "./types";
+import { Field } from "./types";
 import { Input } from "@/components/ui/input";
 import {
     Select,
@@ -18,55 +17,69 @@ import {
     SelectItem
 } from "@/components/ui/select";
 import { Search } from "lucide-react";
+import { Game } from "@/types/Game";
+import { ContextMenuItemType } from "../context-menu/types";
+import { useGameListsStore } from "@/stores/useGameListsStore";
+
+interface HybridListProps {
+    data: Game[];
+    fields?: Field<Game>[];
+    contextMenu: (game: Game) => ContextMenuItemType[];
+    onViewGame?: (game: Game) => void;
+}
 
 
-const fields: Field[] = [
-    { key: "name", title: "Nome", dataIndex: "name" },
-    { key: "category", title: "Categoria", dataIndex: "category" },
-    { key: "year", title: "Ano", dataIndex: "year" },
-];
+export default function HybridList({
+    data,
+    fields = [],
+    contextMenu
+}: HybridListProps) {
+    const [view, setView] = useState<
+        "grid" | "table" | "infinite-scroll" | "virtualized"
+    >("virtualized");
 
-export default function HybridList() {
-    const [view, setView] = useState<"grid" | "table" | "infinite-scroll" | "virtualized">("grid");
+
+
+
     const [selected, setSelected] = useState<React.Key[]>([]);
     const [search, setSearch] = useState("");
     const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(6);
-    const toggle = (item: BaseItem) => {
+
+    const toggle = (item: Game) => {
         setSelected(prev =>
-            prev.includes(item.key)
-                ? prev.filter(k => k !== item.key)
-                : [...prev, item.key]
+            prev.includes(item._id)
+                ? prev.filter(k => k !== item._id)
+                : [...prev, item._id]
         );
     };
 
-    const contextMenu = (item: BaseItem) => [
-        { label: "Abrir" },
-        { label: "Editar" },
-        { label: "---" },
-        { label: "Excluir", onClick: () => console.log("delete", item) },
-    ];
-    const filteredData = search
+    const nameField = fields.find(f => f.key === "name");
+
+    const filteredData = search && nameField
         ? data.filter(item =>
-            item.name.toLowerCase().includes(search.toLowerCase())
+            String(nameField.sortValue?.(item) ?? "")
+                .includes(search.toLowerCase())
         )
         : data;
 
-
-    const sortedData = [...filteredData].sort((a, b) => {
-        if (a.name < b.name) return sortDir === "asc" ? -1 : 1;
-        if (a.name > b.name) return sortDir === "asc" ? 1 : -1;
+    const sortedData = nameField
+        ? [...filteredData].sort((a, b) => {
+            const av = nameField.sortValue?.(a);
+            const bv = nameField.sortValue?.(b);
+            if (av! < bv!) return sortDir === "asc" ? -1 : 1;
+            if (av! > bv!) return sortDir === "asc" ? 1 : -1;
         return 0;
-    });
+        })
+        : filteredData;
 
-    const totalItems = sortedData.length;
-    const totalPages = Math.ceil(totalItems / pageSize);
-
+    const totalPages = Math.ceil(sortedData.length / pageSize);
     const paginatedData = sortedData.slice(
         (page - 1) * pageSize,
         page * pageSize
     );
+
     useEffect(() => {
         setPage(1);
     }, [search, sortDir, pageSize]);
@@ -74,52 +87,48 @@ export default function HybridList() {
     return (
         <div className="space-y-4">
             <div className="flex gap-2">
-
                 <Input
                     placeholder="Buscar por nome..."
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            setPage(1);
-                        }
-                    }}
+                    onChange={e => setSearch(e.target.value)}
                 />
 
-                <Button onClick={() => setPage(1)} variant="outline">
+                <Button variant="outline">
                     <Search size={16} />
                 </Button>
+
                 <Button
                     variant="outline"
-                    onClick={() => {
-                        setSortDir(prev => (prev === "asc" ? "desc" : "asc"));
-                        setPage(1);
-                    }}
+                    onClick={() =>
+                        setSortDir(prev => (prev === "asc" ? "desc" : "asc"))
+                    }
                 >
                     Ordem: {sortDir === "asc" ? "A → Z" : "Z → A"}
                 </Button>
-
-        
             </div>
-            <Select onValueChange={(e) => setView(e as "grid" | "table" | "infinite-scroll" | "virtualized")}>
+
+            <Select onValueChange={v => setView(v as any)}>
                 <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Theme" />
+                    <SelectValue placeholder="View" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="table">Table</SelectItem>
                     <SelectItem value="grid">Grid</SelectItem>
-                    <SelectItem value="infinite-scroll">Infinite Scroll (Render Stack)</SelectItem>
-                              <SelectItem value="virtualized">Infinite Scroll (Virtualization)</SelectItem>
+                    <SelectItem value="infinite-scroll">Infinite Scroll</SelectItem>
+                    <SelectItem value="virtualized">Virtualized</SelectItem>
                 </SelectContent>
             </Select>
-            {view === "grid" &&
+
+            {view === "grid" && (
                 <GridView
                     data={paginatedData}
                     selectedKeys={selected}
                     toggle={toggle}
                     contextMenu={contextMenu}
-                />}
-            {view === "table" &&
+                />
+            )}
+
+            {view === "table" && (
                 <TableView
                     data={paginatedData}
                     fields={fields}
@@ -127,60 +136,61 @@ export default function HybridList() {
                     toggle={toggle}
                     contextMenu={contextMenu}
                 />
-            }
-            {view === "infinite-scroll" &&
+            )}
+
+            {view === "infinite-scroll" && (
                 <InfiniteGridView
                     data={sortedData}
                     selectedKeys={selected}
                     toggle={toggle}
                     contextMenu={contextMenu}
                 />
-            }
-                   {view === "virtualized" &&
+            )}
+
+            {view === "virtualized" && (
                 <VirtualizedGridView
                     data={sortedData}
                     selectedKeys={selected}
                     toggle={toggle}
                     contextMenu={contextMenu}
                 />
-            }
-            {view !== 'infinite-scroll' && view !== 'virtualized' &&
-                <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                        <Button
-                            variant="outline"
-                            disabled={page === 1}
-                            onClick={() => setPage(p => p - 1)}
-                        >
-                            Anterior
-                        </Button>
+            )}
 
-                        {Array.from({ length: totalPages }).map((_, i) => {
-                            const p = i + 1;
-                            return (
-                                <Button
-                                    key={p}
-                                    size="icon"
-                                    variant={p === page ? "default" : "outline"}
-                                    onClick={() => setPage(p)}
-                                >
-                                    {p}
-                                </Button>
-                            );
-                        })}
+            {view !== "infinite-scroll" && view !== "virtualized" && (
+                <div className="flex gap-2 flex-wrap">
+                    <Button
+                        variant="outline"
+                        disabled={page === 1}
+                        onClick={() => setPage(p => p - 1)}
+                    >
+                        Anterior
+                    </Button>
 
-                        <Button
-                            variant="outline"
-                            disabled={page === totalPages}
-                            onClick={() => setPage(p => p + 1)}
-                        >
-                            Próxima
-                        </Button>
-                    </div>
+                    {Array.from({ length: totalPages }).map((_, i) => {
+                        const p = i + 1;
+                        return (
+                            <Button
+                                key={p}
+                                size="icon"
+                                variant={p === page ? "default" : "outline"}
+                                onClick={() => setPage(p)}
+                            >
+                                {p}
+                            </Button>
+                        );
+                    })}
+
+                    <Button
+                        variant="outline"
+                        disabled={page === totalPages}
+                        onClick={() => setPage(p => p + 1)}
+                    >
+                        Próxima
+                    </Button>
 
                     <Select
                         value={String(pageSize)}
-                        onValueChange={(v) => {
+                        onValueChange={v => {
                             setPageSize(Number(v));
                             setPage(1);
                         }}
@@ -189,14 +199,13 @@ export default function HybridList() {
                             <SelectValue placeholder="Itens / página" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="4">4</SelectItem>
                             <SelectItem value="6">6</SelectItem>
                             <SelectItem value="12">12</SelectItem>
                             <SelectItem value="24">24</SelectItem>
                         </SelectContent>
                     </Select>
-                </div>}
-
+                </div>
+            )}
         </div>
     );
 }

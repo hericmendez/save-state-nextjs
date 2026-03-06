@@ -1,4 +1,5 @@
-// lib/cover-search/index.ts
+// src/lib/cover-search/index.ts
+
 import { CoverSearchInput, CoverResult } from "./types";
 import { wikipediaCoverProvider } from "./providers/wikipedia-provider";
 import { scoreWikiResult } from "./ranker";

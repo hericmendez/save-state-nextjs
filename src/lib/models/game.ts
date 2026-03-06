@@ -1,6 +1,15 @@
-import mongoose from "mongoose";
+import { model, models, Schema } from "mongoose";
+const CoverSchema = new Schema(
+  {
+    url: { type: String, required: true },
+    source: { type: String, required: true },
+    confidence: { type: Number, required: true },
+  },
+  { _id: false }
+);
 
-const GameSchema = new mongoose.Schema(
+
+const GameSchema = new Schema(
   {
     userId: {
       type: String,
@@ -14,18 +23,17 @@ const GameSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
-      cover: {
+      cover: CoverSchema,
+      genres: {
         type: String,
       },
-      genres: {
-        type: [String],
-        default: [],
-      },
       platforms: {
-        type: [String],
-        default: [],
+        type: String,
       },
-      developer: {
+      developers: {
+        type: String,
+      },
+      publishers: {
         type: String,
       },
       release_date: {
@@ -50,7 +58,7 @@ const GameSchema = new mongoose.Schema(
         type: Number,
         min: 0,
       },
-      personal_rating: {
+      rating: {
         type: Number,
         min: 0,
         max: 10,
@@ -62,7 +70,7 @@ const GameSchema = new mongoose.Schema(
       // 🔗 Relação N:N com GameList
       listIds: [
         {
-          type: mongoose.Schema.Types.ObjectId,
+          type: Schema.Types.ObjectId,
           ref: "GameList",
         },
       ],
@@ -74,4 +82,4 @@ const GameSchema = new mongoose.Schema(
 );
 
 export const Game =
-  mongoose.models.Game || mongoose.model("Game", GameSchema);
+  models.Game || model("Game", GameSchema);

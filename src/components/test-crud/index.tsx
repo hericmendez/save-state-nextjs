@@ -16,9 +16,10 @@ export default function TestCrudPage() {
     removeGameFromList
   } = useGamesStore();
 
-  const { lists, loadLists, createList, updateList, deleteList } =
+  const { lists, loadLists, createList, updateList, deleteList, resolveGameLists } =
     useGameListsStore();
-
+  console.log("test crud lists ==> ", lists);
+  console.log("test crud games ==> ", games);
   const [newListName, setNewListName] = useState("");
 
   const [selectedGameId, setSelectedGameId] = useState("");
@@ -108,6 +109,7 @@ export default function TestCrudPage() {
       <h2>Jogos</h2>
 
       {games.map((game) => (
+
         <div
           key={game._id}
           style={{

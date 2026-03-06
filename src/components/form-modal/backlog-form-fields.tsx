@@ -1,9 +1,9 @@
-// src/components/form-modal/backlog-form-fields.tsx
 "use client";
 
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import * as z from "zod";
-
+import { useEffect, useState } from "react";
+import { Plus, Search } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -21,15 +21,19 @@ import { Input } from "@/components/ui/input";
 import {
   InputGroup,
   InputGroupAddon,
+
   InputGroupText,
   InputGroupTextarea
 } from "@/components/ui/input-group";
-
-import { useGameListsStore } from "@/stores/useGameListsStore";
-import { useEffect, useState } from "react";
-
-import { useFormContext } from "react-hook-form";
-import { gameFormSchema } from "./form-props";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -38,96 +42,187 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/components/ui/select";
+
 import GameCoverSearch from "../game-cover-search-test";
+import { useGameListsStore } from "@/stores/useGameListsStore";
+import { gameFormSchema } from "./form-props";
+import { buildHLTBSearchUrl } from "@/lib/utils";
+
 type FormData = z.infer<typeof gameFormSchema>;
 
 export default function BacklogFormFields() {
-  const { control, watch } = useFormContext<FormData>();
-  const { lists, loadLists } = useGameListsStore();
+  const { control, watch, setValue } = useFormContext<FormData>();
+  const { lists, loadLists, createList } = useGameListsStore();
+
   const gameName = watch("game_data.name");
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [newListOpen, setNewListOpen] = useState(false);
+  const [newListName, setNewListName] = useState("");
+  const [previewData, setPreviewData] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     loadLists();
-  }, [loadLists]);
+  }, [loadLists, createList]);
+
+  async function handleFetchPreview() {
+    if (!gameName) return;
+
+    try {
+      setLoading(true);
+
+      const res = await fetch(
+        `/api/scraper/game-search?title=${encodeURIComponent(gameName)}`
+      );
+
+      if (!res.ok) throw new Error("Erro ao buscar metadados");
+
+      const data = await res.json();
+      setPreviewData(data);
+      setPreviewOpen(true);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleNewListDialog() {
+    setNewListOpen(true)
+  }
+
+  function applyPreview() {
+    if (!previewData) return;
+
+    setValue("game_data.name", previewData.name);
+    setValue("game_data.release_date", previewData.release_date);
+    setValue("game_data.developers", previewData.developers?.join(", "));
+    setValue("game_data.publishers", previewData.publishers?.join(", "));;
+    setValue("game_data.summary", previewData.summary);
+
+    if (previewData.cover) {
+      setValue("game_data.cover", {
+        url: previewData.cover.url,
+        source: previewData.cover.source,
+        confidence: previewData.cover.confidence
+      });
+    }
+
+    setPreviewOpen(false);
+  }
+
+  function addNewList() {
+    if (newListName) {
+      const trimmed = newListName.trim();
+      if (!trimmed) return;
+
+      createList(trimmed);
+      setNewListOpen(false)
+    }
+
+  }
 
   return (
     <>
-      <Card className="p-5">
+      {/* ===== DADOS DO JOGO ===== */}
+
+      <div className="flex flex-col gap-5 ">
+        <Card className="p-5 w-100">
         <CardHeader>
           <CardTitle>Dados do jogo</CardTitle>
           <CardDescription>
-            Metadados do jogo, como nome, data de lançamento, devs/publishers, e
-            nota geral.
+              Metadados do jogo obtidos via scraping.
           </CardDescription>
         </CardHeader>
+
         <CardContent>
+
+
           <Controller
-            name="game_data.name"
+              name="game_data.name"
             control={control}
             render={({ field, fieldState }) => (
-              <Field className="pb-5" data-invalid={fieldState.invalid}>
-                <FieldLabel>Nome do jogo</FieldLabel>
-                <Input {...field} placeholder="Ex: Metroid Prime 4" />
+              <div >
+                <Field className="pb-5" data-invalid={fieldState.invalid}>
+                  <FieldLabel>Nome do jogo</FieldLabel>
+                  <div className="flex md-flex-row gap-3">
+                    <Input {...field} className="w-[90%]" />
+                    <Button type="button"
+                      variant="secondary"
+                      className="w-[10%]"
+                      onClick={handleFetchPreview}
+                      disabled={loading || !gameName}>      {loading ? '...' : <Search />}</Button>
+
+                  </div>
+
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
+
+
               </Field>
+
+              </div>
             )}
           />
+
+
           <Controller
-            name="game_data.developers"
+              name="game_data.developers"
             control={control}
-            render={({ field, fieldState }) => (
-              <Field className="pb-5" data-invalid={fieldState.invalid}>
-                <FieldLabel>Desenvolvedores</FieldLabel>
-                <Input {...field} placeholder="Desenvolvedor(es) do jogo" />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+              render={({ field }) => (
+                <Field className="pb-5">
+                  <FieldLabel>Desenvolvedores</FieldLabel>
+                  <Input {...field}
+                  />
               </Field>
             )}
           />
+
           <Controller
-            name="game_data.publishers"
+              name="game_data.publishers"
             control={control}
-            render={({ field, fieldState }) => (
-              <Field className="pb-5" data-invalid={fieldState.invalid}>
-                <FieldLabel>Publishers</FieldLabel>
-                <Input {...field} placeholder="Empresa que publicou o jogo" />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
+              render={({ field }) => (
+                <Field className="pb-5">
+                  <FieldLabel>Publishers</FieldLabel>
+                  <Input {...field} />
               </Field>
             )}
           />
           <Controller
-            name="game_data.id"
+              name="game_data.genres"
             control={control}
-            render={({ field }) => (
-              <Field className="pb-5 hidden">
-                <FieldLabel>ID do jogo (IGDB)</FieldLabel>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                  placeholder="Ex: 123456"
-                />
+              render={({ field }) => (
+                <Field className="pb-5">
+                  <FieldLabel>Gêneros</FieldLabel>
+                  <Input {...field}
+                  />
               </Field>
             )}
           />
+            <Controller
+              name="game_data.platforms"
+            control={control}
+              render={({ field }) => (
+                <Field className="pb-5">
+                  <FieldLabel>Platforms</FieldLabel>
+                  <Input {...field} />
+              </Field>
+            )}
+            />
           <Controller
-            name="game_data.release_date"
+              name="game_data.release_date"
             control={control}
             render={({ field }) => (
               <Field className="pb-5">
                 <FieldLabel>Ano de lançamento</FieldLabel>
                 <Input
-                  type="number"
-                  placeholder="Ex: 2024"
+                  type="text"
                   {...field}
                   onChange={(e) =>
                     field.onChange(
-                      e.target.value ? Number(e.target.value) : undefined
+                      e.target.value ? String(e.target.value) : undefined
                     )
                   }
                 />
@@ -135,45 +230,18 @@ export default function BacklogFormFields() {
             )}
           />
 
-          <Controller
-            name="game_data.total_rating"
-            control={control}
-            render={({ field }) => (
-              <Field className="pb-5">
-                <FieldLabel>Nota geral (0–100)</FieldLabel>
-                <Input
-                  type="number"
-                  min={0}
-                  max={100}
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value ? Number(e.target.value) : undefined
-                    )
-                  }
-                />
-              </Field>
-            )}
-          />
+
           <Controller
             name="game_data.cover"
             control={control}
             render={({ field }) => (
               <Field className="pb-5">
                 <FieldLabel>Capa do jogo</FieldLabel>
-
                 <GameCoverSearch
                   query={gameName}
                   value={field.value}
                   onChange={field.onChange}
                 />
-
-                {field.value?.url && (
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Fonte: {field.value.source} · confiança{" "}
-                    {Math.round(field.value.confidence * 100)}%
-                  </p>
-                )}
               </Field>
             )}
           />
@@ -189,7 +257,6 @@ export default function BacklogFormFields() {
                     {...field}
                     rows={4}
                     className="resize-none"
-                    placeholder="Descrição do jogo"
                   />
                   <InputGroupAddon align="block-end">
                     <InputGroupText>
@@ -202,7 +269,7 @@ export default function BacklogFormFields() {
           />
         </CardContent>
       </Card>
-      <Card className="p-5">
+        <Card className="p-5 w-100">
         <CardHeader>
           <CardTitle>Dados do jogador</CardTitle>
           <CardDescription>
@@ -231,19 +298,58 @@ export default function BacklogFormFields() {
             name="player_data.hours_played"
             control={control}
             render={({ field, fieldState }) => (
-              <Field className="pb-5" data-invalid={fieldState.invalid}>
+              <Field className="" data-invalid={fieldState.invalid}>
                 <FieldLabel>Horas jogadas</FieldLabel>
-                <Input
+                <div>
+                  <Input
                   type="number"
                   min={0}
                   {...field}
                   onChange={(e) => field.onChange(Number(e.target.value))}
                   placeholder="Ex: 40"
-                />
+
+                  />
+                  {gameName && (
+                    <a
+                      href={buildHLTBSearchUrl(gameName)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground underline pb-5"
+                    >
+                      Ver tempo médio de <strong>{gameName || "Game"}  </strong> no HowLongToBeat
+                    </a>
+                  )}
+                </div>
+
+
                 {fieldState.invalid && (
                   <FieldError errors={[fieldState.error]} />
                 )}
               </Field>
+
+              )}
+            />
+            <div className="flex md-flex-row gap-4">
+              <Controller
+                name="player_data.times_finished"
+                control={control}
+                render={({ field }) => (
+                  <Field className="py-5">
+                    <FieldLabel>Quantas vezes completou</FieldLabel>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={10}
+                      step={0.5}
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === "" ? undefined : Number(e.target.value)
+                        )
+                      }
+
+                    />
+                  </Field>
             )}
           />
 
@@ -251,7 +357,7 @@ export default function BacklogFormFields() {
             name="player_data.rating"
             control={control}
             render={({ field }) => (
-              <Field className="pb-5">
+              <Field className="py-5">
                 <FieldLabel>Sua nota (0–10)</FieldLabel>
                 <Input
                   type="number"
@@ -269,6 +375,8 @@ export default function BacklogFormFields() {
               </Field>
             )}
           />
+            </div>
+
 
           <Controller
             name="player_data.review"
@@ -296,17 +404,22 @@ export default function BacklogFormFields() {
             )}
           />
           <Controller
-            name="player_data.gameListId"
+              name="player_data.listIds"
             control={control}
-            render={({ field }) => (
-              <Field className="pb-5">
+              render={({ field }: any) => (
+                <Field className="w-full">
                 <FieldLabel>Adicionar à lista</FieldLabel>
-                <Select>
-                  <SelectTrigger className="w-full ">
-                    <SelectValue placeholder="Select a timezone" />
+                  <div className="flex flex-row gap-3">
+                    <div className="w-[90%]">
+                      <Select
+                        value={field.value?.[0]}
+                        onValueChange={(value) => field.onChange([value])}
+                      >
+                        <SelectTrigger >
+                          <SelectValue placeholder="Escolha uma lista" />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
+                        <SelectContent >
+                          <SelectGroup >
                       {lists.map((list) => (
                         <SelectItem key={list._id} value={list._id}>
                           {list.name}
@@ -314,12 +427,79 @@ export default function BacklogFormFields() {
                       ))}
                     </SelectGroup>
                   </SelectContent>
+
                 </Select>
+
+                    </div>
+                    <div className="w-[10%]">
+                      <Button type="button"
+                        variant="secondary"
+                        className="w-full"
+                        onClick={handleNewListDialog}
+                        disabled={loading}>      {loading ? '...' : "+ Nova Lista"}</Button>
+                    </div>
+                  </div>
+
+
               </Field>
+
             )}
+
           />
         </CardContent>
       </Card>
+      </div>
+
+      {/* ===== PREVIEW DIALOG ===== */}
+      <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{previewData?.name}</DialogTitle>
+            <DialogDescription>
+              {previewData?.release_date} ·{" "}
+              {previewData?.developers?.join(", ")}
+            </DialogDescription>
+          </DialogHeader>
+
+          <p className="text-sm leading-relaxed">
+            {previewData?.summary}
+          </p>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setPreviewOpen(false)}>
+              Cancelar
+            </Button>
+            <Button type="button" onClick={applyPreview}>
+              Aplicar ao formulário
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ===== NEW LIST DIALOG ===== */}
+      <Dialog open={newListOpen} onOpenChange={setNewListOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Criar nova lista</DialogTitle>
+            <DialogDescription>
+              Digite o nome da nova lista.
+            </DialogDescription>
+          </DialogHeader>
+
+          <p className="text-sm leading-relaxed">
+            <Input onChange={(e) => setNewListName(e.target.value)} />
+          </p>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setNewListOpen(false)}>
+              Cancelar
+            </Button>
+            <Button type="button" onClick={addNewList}>
+              Criar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

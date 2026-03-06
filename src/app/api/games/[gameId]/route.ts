@@ -1,9 +1,9 @@
-//app/api/games/[gameId]/lists/route.ts
+// src/app/api/games/[gameId]/lists/route.ts
 
 import { NextResponse } from 'next/server'
 import { connectDB } from '@/lib/db'
 import { Game } from '@/lib/models/game'
-import { useAuthStore } from '@/stores/useAuthStore'
+
 import { getUserId } from '@/lib/auth'
 export async function GET(
   req: Request,
@@ -26,11 +26,12 @@ export async function GET(
     userId
   }).lean()
 
-  if (!game) {
-    return NextResponse.json(
-      { error: "Jogo não encontrado" },
-      { status: 404 }
-    )
+  if (game?.game_data) {
+    const normalize = (v: any) =>
+      Array.isArray(v) ? v.join(", ") : v
+
+    game.game_data.genres = normalize(game.game_data.genres)
+    game.game_data.platforms = normalize(game.game_data.platforms)
   }
 
   return NextResponse.json(game)

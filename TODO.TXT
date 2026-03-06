@@ -1,0 +1,5 @@
+O que falta no CRUD:
+- Edição de jogo (form page)
+- Edição de jogo (form modal)
+- Ajustar infos do jogo (modal)
+- Exibir jogos da lista (game-lists)

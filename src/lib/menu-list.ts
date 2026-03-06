@@ -1,10 +1,9 @@
 import {
-  Tag,
-  Users,
+
   Settings,
   Bookmark,
   SquarePen,
-  LayoutGrid,
+
   LucideIcon,
   GamepadIcon
 } from "lucide-react";
@@ -43,10 +42,6 @@ export function getMenuList(pathname: string): Group[] {
               label: "Placeholder"
             },
 
-            {
-              href: "/components/form-page",
-              label: "Form Page"
-            }
           ]
         },
         {
@@ -55,7 +50,7 @@ export function getMenuList(pathname: string): Group[] {
           icon: Bookmark,
           submenus: [
             {
-              href: "/components/hybrid-list",
+              href: "/backlog",
               label: "Hybrid List"
             },
             {
@@ -66,6 +61,14 @@ export function getMenuList(pathname: string): Group[] {
               href: "/crud",
               label: "CRUD"
             }
+          ]
+        },
+        {
+          href: "/backlog",
+          label: "Backlog",
+          icon: GamepadIcon,
+          submenus: [
+
           ]
         }
       ]
@@ -80,6 +83,7 @@ export function getMenuList(pathname: string): Group[] {
           icon: Settings
         }
       ]
-    }
+    },
+
   ];
 }

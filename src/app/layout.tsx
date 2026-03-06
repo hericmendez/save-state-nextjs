@@ -5,6 +5,7 @@ import "./globals.css";
 
 import { ThemeProvider } from "@/providers/theme-provider";
 import { AuthHydrator } from "@/providers/auth-provider";
+import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -46,6 +47,7 @@ export default function RootLayout({
         <AuthHydrator>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+            <Toaster />
         </ThemeProvider>
         </AuthHydrator>
 

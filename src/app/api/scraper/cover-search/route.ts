@@ -1,6 +1,7 @@
-// app/api/cover-search/route.ts
+// src/app/api/cover-search/route.ts
+
 import { NextResponse } from "next/server";
-import { searchGameCovers } from "@/lib/cover-search";
+import { searchGameCovers } from "@/lib/scrapers/cover-search";
 
 export async function POST(req: Request) {
   try {

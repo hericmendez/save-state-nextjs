@@ -1,3 +1,5 @@
+// src/lib/cover-search/ranker.ts
+
 export function scoreWikiResult(title: unknown, query: string) {
   if (typeof title !== "string") return 0;
 

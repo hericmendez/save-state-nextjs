@@ -5,8 +5,8 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import clsx from "clsx";
-import { searchGameCoversClient } from "@/lib/cover-search/client";
-import type { CoverResult } from "@/lib/cover-search/types";
+import { searchGameCoversClient } from "@/lib/scrapers/cover-search/client";
+import type { CoverResult } from "@/lib/scrapers/cover-search/types";
 type GameCoverSearchProps = {
   query: string;
   value?: {

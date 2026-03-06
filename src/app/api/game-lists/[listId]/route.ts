@@ -18,6 +18,7 @@ export async function GET(
 
   const { listId } = await params
 
+
   const userId = await getUserId()
   if (!userId) {
     return NextResponse.json(
@@ -41,13 +42,13 @@ export async function GET(
 
   // 2️⃣ Busca os jogos que pertencem à lista
   const games = await Game.find({
+
     userId,
     gameListIds: listId
   }).lean()
-
   return NextResponse.json({
   list,
-  games
+
 })
 
 }

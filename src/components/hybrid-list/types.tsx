@@ -1,3 +1,4 @@
+import { Game } from "@/types/Game";
 import React from "react";
 
 export interface BaseItem {
@@ -8,9 +9,9 @@ export interface BaseItem {
   year: number;
 }
 
-export interface Field {
-  key: string;
-  title: string;
-  dataIndex: keyof BaseItem;
+export interface Field<T> {
+  key: string
+  title: string
+  accessor: (item: T) => React.ReactNode
+  sortValue?: (item: T) => string | number
 }
-

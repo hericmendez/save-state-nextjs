@@ -1,4 +1,4 @@
-// src/components/form-modal/drawer.tsx
+// src/components/form-modal/drawer.tsx (form wrapper)
 "use client";
 
 import { FormProvider } from "react-hook-form";
@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sheet";
 import { FieldGroup } from "@/components/ui/field";
 
-type FormDrawerProps = {
+type FormSheetProps = {
   buttonName: string;
   drawerTitle: string;
 
@@ -34,12 +34,12 @@ type FormDrawerProps = {
   children: React.ReactNode;
 };
 
-export function FormDrawer({
+export default function FormSheet({
   buttonName,
   drawerTitle,
   formModal,
   children
-}: FormDrawerProps) {
+}: FormSheetProps) {
   const { dialogProps, form, submitProps, cancelProps } = formModal;
 
   return (
@@ -48,33 +48,35 @@ export function FormDrawer({
         <Button variant="outline">{buttonName}</Button>
       </SheetTrigger>
 
-      <SheetContent style={{ maxWidth: "50vw", overflowY: "auto" }}>
+      <SheetContent style={{ maxWidth: "70vw", overflowY: "auto" }}>
         <SheetHeader>
           <SheetTitle>{drawerTitle}</SheetTitle>
         </SheetHeader>
 
         <FormProvider {...form}>
-          {" "}
-          <div>
-            <form onSubmit={submitProps.onSubmit}>
-              <FieldGroup>{children}</FieldGroup>
+          <form onSubmit={form.handleSubmit(submitProps.onSubmit)}>
+            <FieldGroup>{children}</FieldGroup>
 
-              <div className="flex justify-end gap-2 mt-6">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={cancelProps.onCancel}
-                >
-                  Cancelar
-                </Button>
+            <div className="flex justify-end gap-2 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={cancelProps.onCancel}
+              >
+                Cancelar
+              </Button>
 
-                <Button type="submit" disabled={submitProps.isSubmitting}>
-                  Salvar
-                </Button>
-              </div>
-            </form>{" "}
-          </div>
+              <Button
+                type="submit"
+                onClick={()=>console.log(JSON.stringify(form.errors))}
+                disabled={submitProps.isSubmitting}
+              >
+                Salvar
+              </Button>
+            </div>
+          </form>
         </FormProvider>
+
       </SheetContent>
     </Sheet>
   );

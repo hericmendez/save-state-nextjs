@@ -1,9 +1,8 @@
+// src/app/(app)/games/backlog/page.tsx
 "use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { useRouter } from 'next/navigation'; // For App Router
 import { ContentLayout } from "@/components/admin-panel/content-layout";
 import {
   Breadcrumb,
@@ -13,63 +12,35 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-
 import HybridList from "@/components/hybrid-list";
 import { Field } from "@/components/hybrid-list/types";
 import { Game } from "@/types/Game";
-
 import { useGamesStore } from "@/stores/useGamesStore";
 import { useGameListsStore } from "@/stores/useGameListsStore";
-
 import { ContextMenuItemType } from "@/components/context-menu/types";
 
 import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
 import GameDetails from "@/components/game-details";
 
 export default function BacklogPage() {
-
-  const params = useParams();
-  const listId = params?.listId as string | undefined;
-
   const [showGame, setShowGame] = useState(false);
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
+  console.log("selectedGame ==> ", selectedGame);
 
 
-  const { games, loadGames, loadGameById, addGameToList, removeGameFromList } =
+
+  const { games, loadGames, addGameToList, removeGameFromList } =
     useGamesStore();
 
-  const {
-    lists,
-    loadLists,
-    loadGamesFromList,
-    gamesByList
-  } = useGameListsStore();
-
-  const gamesFromList = listId ? gamesByList[listId] : null;
+  const { lists, loadLists } = useGameListsStore();
 
   useEffect(() => {
+    loadGames();
     loadLists();
+  }, [loadGames, loadLists]);
+  const handleViewGame = (game: Game) => {
 
-    if (listId) {
-      loadGamesFromList(listId);
-    } else {
-      loadGames();
-    }
-
-  }, [listId, loadGames, loadGamesFromList, loadLists]);
-
-  const data = listId ? gamesFromList ?? [] : games;
-  console.log("data ==> ", data);
-  const router = useRouter();
-  const handleViewGame = async (gameId: string) => {
-
-    const fullGame = await loadGameById(gameId)
-    console.log("fullGame ==> ", fullGame);
-
-    if (fullGame) {
-      setSelectedGame(fullGame);
-    }
-
+    setSelectedGame(game);
     setShowGame(true);
   };
 
@@ -77,10 +48,9 @@ export default function BacklogPage() {
     {
       key: "name",
       title: "Nome",
-      accessor: g => g.game_data?.name,
-      sortValue: g => g.game_data?.name.toLowerCase(),
+      accessor: g => g.game_data.name,
+      sortValue: g => g.game_data.name.toLowerCase(),
     },
-
     {
       key: "status",
       title: "Categoria",
@@ -89,13 +59,13 @@ export default function BacklogPage() {
     {
       key: "year",
       title: "Ano",
-      accessor: g => g.game_data?.release_date,
-      sortValue: g => g.game_data?.release_date,
+      accessor: g => g.game_data.release_date,
+      sortValue: g => g.game_data.release_date,
     },
   ];
 
   const contextMenu = (game: Game): ContextMenuItemType[] => {
-    const currentIds = new Set(game?.player_data?.listIds);
+    const currentIds = new Set(game.player_data?.listIds);
 
     const addable = lists.filter(l => !currentIds.has(l._id));
     const removable = lists.filter(l => currentIds.has(l._id));
@@ -103,12 +73,9 @@ export default function BacklogPage() {
     return [
       {
         label: "Ver jogo",
-        onClick: () => handleViewGame(game._id),
+        onClick: () => handleViewGame(game),
       },
-      {
-        label: "Editar",
-        onClick: () => router.push(`/game/${game._id}/form`),
-      },
+
       ...(addable.length
         ? [{
           label: "Adicionar a",
@@ -133,35 +100,26 @@ export default function BacklogPage() {
 
   return (
     <ContentLayout title="Backlog">
-
       <Breadcrumb>
         <BreadcrumbList>
-
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
               <Link href="/">Home</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
-
           <BreadcrumbSeparator />
-
           <BreadcrumbItem>
             <BreadcrumbPage>Games</BreadcrumbPage>
           </BreadcrumbItem>
-
           <BreadcrumbSeparator />
-
           <BreadcrumbItem>
-            <BreadcrumbPage>
-              {listId ? "Lista" : "Backlog"}
-            </BreadcrumbPage>
+            <BreadcrumbPage>Backlog</BreadcrumbPage>
           </BreadcrumbItem>
-
         </BreadcrumbList>
       </Breadcrumb>
 
       <HybridList
-        data={data}
+        data={games}
         fields={fields}
         contextMenu={contextMenu}
       />
