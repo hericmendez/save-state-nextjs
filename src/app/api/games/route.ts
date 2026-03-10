@@ -23,7 +23,7 @@ export async function GET() {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const games = await Game.find({ userId }).lean()
+  const games = await Game.find({ userId }).lean();
   return NextResponse.json(games)
 }
 

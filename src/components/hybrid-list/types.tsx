@@ -14,4 +14,5 @@ export interface Field<T> {
   title: string
   accessor: (item: T) => React.ReactNode
   sortValue?: (item: T) => string | number
+  cell?: (game: Game) => any
 }

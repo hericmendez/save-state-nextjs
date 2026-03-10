@@ -1,8 +1,84 @@
 shadcn-ui-sidebar/
-
+    ├── .env.local
+    ├── .eslintrc.json
+    ├── .github/
+    │   └── appmod/
+    │       └── appcat/
+    ├── .gitignore
+    ├── LICENSE
+    ├── README.md
+    ├── TODO.TXT
+    ├── components.json
+    ├── generate-tree.js
+    ├── next-env.d.ts
+    ├── next.config.mjs
+    ├── package-lock.json
+    ├── package.json
+    ├── pnpm-lock.yaml
+    ├── postcss.config.mjs
+    ├── public/
+    │   ├── demo-dark-min.png
+    │   ├── demo-light-min.png
+    │   ├── demo-mobile-dark-min.png
+    │   ├── demo-mobile-light-min.png
+    │   ├── next.svg
+    │   ├── placeholder.png
+    │   ├── registry/
+    │   │   └── shadcn-sidebar.json
+    │   ├── shotgun.png
+    │   ├── vercel.svg
+    │   └── yugioh.png
+    ├── registry/
+    │   ├── index.ts
+    │   ├── registry-components.ts
+    │   └── schema.ts
+    ├── screenshots/
+    │   ├── screenshot-1.png
+    │   ├── screenshot-2.png
+    │   ├── screenshot-3.png
+    │   └── screenshot-4.png
+    ├── scripts/
+    │   └── build-registry.ts
+    ├── shadcn-ui-sidebar_tree.txt
     ├── src/
     │   ├── app/
+    │   │   ├── (app)/
+    │   │   │   ├── backlog/
+    │   │   │   │   ├── [listId]/
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── components/
+    │   │   │   │   └── form-modal/
+    │   │   │   │       └── page.tsx
+    │   │   │   ├── crud/
+    │   │   │   │   └── page.tsx
+    │   │   │   ├── game/
+    │   │   │   │   └── [gameId]/
+    │   │   │   │       ├── details/
+    │   │   │   │       │   └── page.tsx
+    │   │   │   │       └── form/
+    │   │   │   │           └── page.tsx
+    │   │   │   ├── game-lists/
+    │   │   │   │   └── [listId]/
+    │   │   │   │       └── page.tsx
+    │   │   │   ├── layout.tsx
+    │   │   │   ├── page.tsx
+    │   │   │   ├── placeholder/
+    │   │   │   │   └── page.tsx
+    │   │   │   └── users/
+    │   │   │       └── page.tsx
+    │   │   ├── (auth)/
+    │   │   │   ├── login/
+    │   │   │   │   └── page.tsx
+    │   │   │   └── register/
+    │   │   │       └── page.tsx
     │   │   ├── api/
+    │   │   │   ├── auth/
+    │   │   │   │   ├── login/
+    │   │   │   │   │   └── route.ts
+    │   │   │   │   ├── me/
+    │   │   │   │   │   └── route.ts
+    │   │   │   │   └── register/
+    │   │   │   │       └── route.ts
     │   │   │   ├── game-lists/
     │   │   │   │   ├── [listId]/
     │   │   │   │   │   ├── games/

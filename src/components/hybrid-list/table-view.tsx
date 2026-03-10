@@ -35,9 +35,10 @@ export default function TableView({ data, fields, selectedKeys, toggle, contextM
               <TableRow onClick={() => toggle(item)} className="cursor-pointer">
                 <TableCell>{selected ? "✓" : "+"}</TableCell>
                 {fields.map(f => (
-                  <TableCell>{f.accessor(item)}</TableCell>
-
-                ))}
+             <TableCell key={f.key}>
+               {f.cell ? f.cell(item) : f.accessor(item)}
+             </TableCell>
+           ))}
               </TableRow>
             </CustomContextMenu>
           );

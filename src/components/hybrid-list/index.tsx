@@ -19,20 +19,22 @@ import {
 import { Search } from "lucide-react";
 import { Game } from "@/types/Game";
 import { ContextMenuItemType } from "../context-menu/types";
-import { useGameListsStore } from "@/stores/useGameListsStore";
 
 interface HybridListProps {
     data: Game[];
     fields?: Field<Game>[];
     contextMenu: (game: Game) => ContextMenuItemType[];
     onViewGame?: (game: Game) => void;
+    onLoadMore?: () => void
 }
 
 
 export default function HybridList({
     data,
     fields = [],
-    contextMenu
+    contextMenu,
+    onLoadMore
+
 }: HybridListProps) {
     const [view, setView] = useState<
         "grid" | "table" | "infinite-scroll" | "virtualized"
@@ -153,6 +155,7 @@ export default function HybridList({
                     selectedKeys={selected}
                     toggle={toggle}
                     contextMenu={contextMenu}
+                    onLoadMore={onLoadMore}
                 />
             )}
 

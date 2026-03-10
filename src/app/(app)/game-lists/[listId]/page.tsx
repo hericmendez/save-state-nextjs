@@ -1,3 +1,4 @@
+//src/app/(app)/game-lists/[listid]/page.tsx
 "use client";
 
 import Link from "next/link";
@@ -25,6 +26,7 @@ import { ContextMenuItemType } from "@/components/context-menu/types";
 
 import { Sheet, SheetContent, SheetHeader } from "@/components/ui/sheet";
 import GameDetails from "@/components/game-details";
+import { Star } from "lucide-react";
 
 export default function BacklogPage() {
 
@@ -74,23 +76,63 @@ export default function BacklogPage() {
   };
 
   const fields: Field<Game>[] = [
+
     {
-      key: "name",
-      title: "Nome",
+      key: "game",
+      title: "Game",
       accessor: g => g.game_data?.name,
-      sortValue: g => g.game_data?.name.toLowerCase(),
+      cell: (game: Game) => (
+        <div className="flex gap-5 items-center">
+          <img
+            src={game.game_data.cover?.url}
+            className="w-20 h-30 object-cover rounded"
+          />
+
+          <div className="flex flex-col leading-tight">
+            <span className="text-lg">
+              {game.game_data.name}
+            </span>
+
+            <span className="text-sm text-muted-foreground">
+              {game.game_data.genres}
+            </span>
+
+            <span className="text-sm text-muted-foreground">
+              {game.game_data.platforms} ({game.game_data.release_date})
+            </span>
+          </div>
+        </div>
+      )
     },
 
     {
       key: "status",
-      title: "Categoria",
+      title: "Status",
       accessor: g => g.player_data?.status,
+      cell: (game: Game) => (
+        <p className="text-lg">
+
+
+          {game?.player_data?.status}
+
+        </p>
+      )
     },
     {
-      key: "year",
-      title: "Ano",
-      accessor: g => g.game_data?.release_date,
-      sortValue: g => g.game_data?.release_date,
+      key: "rating",
+      title: "Nota Pessoal",
+      accessor: g => g.player_data?.rating,
+      sortValue: g => g.player_data?.rating,
+      cell: (game: Game) => (
+        <p className="flex items-center gap-2">
+
+          <span className="flex items-center text-yellow-400 text-xl">
+            <Star className="fill-yellow-400 mr-1" />
+            {game?.player_data?.rating}
+          </span>
+        </p>
+
+      )
     },
   ];
 
@@ -164,6 +206,17 @@ export default function BacklogPage() {
         data={data}
         fields={fields}
         contextMenu={contextMenu}
+        onLoadMore={() => {
+          if (!listId) return
+
+          const state = useGameListsStore.getState()
+
+          const nextPage = (state.pageByList[listId] ?? 1) + 1
+
+          if (state.hasMoreByList[listId]) {
+            state.loadGamesFromList(listId, nextPage)
+          }
+        }}
       />
       <Sheet open={showGame} onOpenChange={setShowGame}>
         <SheetContent style={{ maxWidth: "80vw", overflowY: "auto" }}>

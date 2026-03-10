@@ -1,3 +1,4 @@
+//src/app/api/scraper/game-search/route.ts
 import { NextResponse } from "next/server";
 import { scrapeWikipediaGameMetadata } from "@/lib/scrapers/wikipedia/metadata";
 

@@ -1,7 +1,7 @@
 //src/app/components/hybrid-list/virtualized-grid-view.tsx
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ interface Props {
   selectedKeys: React.Key[]
   toggle: (item: Game) => void
   contextMenu: (item: Game) => ContextMenuItemType[]
+  onLoadMore?: () => void
+
 }
 
 const COLUMN_COUNT = 4;
@@ -24,6 +26,7 @@ export default function VirtualizedGridView({
   selectedKeys,
   toggle,
   contextMenu,
+  onLoadMore
 }: Props) {
   const parentRef = useRef<HTMLDivElement | null>(null);
 
@@ -35,7 +38,15 @@ export default function VirtualizedGridView({
     estimateSize: () => CARD_HEIGHT,
     overscan: 5,
   });
+  useEffect(() => {
+    const lastItem = rowVirtualizer.getVirtualItems().at(-1)
 
+  if (!lastItem) return
+
+  if (lastItem.index >= rowCount - 2) {
+    onLoadMore?.()
+  }
+}, [rowVirtualizer.getVirtualItems()])
   return (
     <div
       ref={parentRef}
@@ -52,7 +63,6 @@ export default function VirtualizedGridView({
           const rowIndex = virtualRow.index;
           const start = rowIndex * COLUMN_COUNT;
           const rowItems = data.slice(start, start + COLUMN_COUNT);
-          console.log("rowItems ==> ", rowItems.length);
 
           return (
             <div

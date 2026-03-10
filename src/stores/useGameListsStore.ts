@@ -1,11 +1,10 @@
-//src/stores/useGameLIstStore.ts
-import { create } from "zustand";
+import { create } from "zustand"
 
 export type GameList = {
-  _id: string;
-  name: string;
-  gamesCount?: number;
-};
+  _id: string
+  name: string
+  gamesCount?: number
+}
 
 export type GameShort = {
   _id: string
@@ -20,26 +19,38 @@ export type GameShort = {
   createdAt: string
   updatedAt: string
 }
+
 type GameListsState = {
+  lists: GameList[]
 
-  lists: GameList[];
   gamesByList: Record<string, GameShort[]>
+  pageByList: Record<string, number>
+  hasMoreByList: Record<string, boolean>
 
-  loading: boolean;
-  error: string | null;
+  loading: boolean
+  error: string | null
 
-  loadLists: () => Promise<void>;
-  loadGamesFromList: (listId: string) => Promise<void>
-  createList: (name: string) => Promise<void>;
-  updateList: (listId: string, name: string) => Promise<void>;
-  deleteList: (listId: string) => Promise<void>;
-  resolveGameLists: (listIds: string[]) => GameList[];
-};
+  loadLists: () => Promise<void>
+
+  loadGamesFromList: (
+    listId: string,
+    page?: number
+  ) => Promise<{ hasMore: boolean }>
+
+  createList: (name: string) => Promise<void>
+  updateList: (listId: string, name: string) => Promise<void>
+  deleteList: (listId: string) => Promise<void>
+
+  resolveGameLists: (listIds: string[]) => GameList[]
+}
+
 
 export const useGameListsStore = create<GameListsState>((set, get) => ({
-
   lists: [],
+
   gamesByList: {},
+  pageByList: {},
+  hasMoreByList: {},
 
   loading: false,
   error: null,
@@ -54,7 +65,6 @@ export const useGameListsStore = create<GameListsState>((set, get) => ({
       const lists = await res.json()
 
       set({ lists })
-
     } catch (err) {
       console.error("loadLists:", err)
       set({ error: "Erro ao carregar listas" })
@@ -62,35 +72,44 @@ export const useGameListsStore = create<GameListsState>((set, get) => ({
       set({ loading: false })
     }
   },
-  loadGamesFromList: async (listId: string) => {
-    const cache = get().gamesByList[listId]
 
-    // evita refetch se já temos dados
-    if (cache !== undefined) {
-      return cache
-    }
-
+  loadGamesFromList: async (listId: string, page = 1) => {
     try {
       set({ loading: true, error: null })
 
-      const res = await fetch(`/api/game-lists/${listId}/games`)
+      const res = await fetch(
+        `/api/game-lists/${listId}/games?page=${page}&limit=20`
+      )
+
       if (!res.ok) throw new Error(`Erro ${res.status}`)
 
-      const games = await res.json()
+      const data = await res.json()
 
       set((state) => ({
         gamesByList: {
           ...state.gamesByList,
-          [listId]: games
-        }
+          [listId]:
+            page === 1
+              ? data.games
+              : [...(state.gamesByList[listId] ?? []), ...data.games],
+        },
+
+        pageByList: {
+          ...state.pageByList,
+          [listId]: page,
+        },
+
+        hasMoreByList: {
+          ...state.hasMoreByList,
+          [listId]: data.hasMore,
+        },
       }))
 
-      return games
-
+      return { hasMore: data.hasMore }
     } catch (err) {
       console.error("loadGamesFromList:", err)
       set({ error: "Erro ao carregar jogos da lista" })
-      return []
+      return { hasMore: false }
     } finally {
       set({ loading: false })
     }
