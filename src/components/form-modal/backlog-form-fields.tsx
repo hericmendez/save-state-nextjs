@@ -56,9 +56,9 @@ export default function BacklogFormFields() {
 
   const gameName = watch("game_data.name");
 
-  const [previewOpen, setPreviewOpen] = useState(false);
   const [newListOpen, setNewListOpen] = useState(false);
   const [newListName, setNewListName] = useState("");
+  const [previewOpen, setPreviewOpen] = useState(false);
   const [previewData, setPreviewData] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -77,8 +77,13 @@ export default function BacklogFormFields() {
       );
 
       if (!res.ok) throw new Error("Erro ao buscar metadados");
+      console.log("res ==> ", res);
 
       const data = await res.json();
+      console.log("game preview ==> ", data);
+
+
+
       setPreviewData(data);
       setPreviewOpen(true);
     } catch (err) {
@@ -98,6 +103,8 @@ export default function BacklogFormFields() {
     setValue("game_data.name", previewData.name);
     setValue("game_data.release_date", previewData.release_date);
     setValue("game_data.developers", previewData.developers?.join(", "));
+    setValue("game_data.genres", previewData.genres?.join(", "));
+    setValue("game_data.platforms", previewData.platforms?.join(", "));
     setValue("game_data.publishers", previewData.publishers?.join(", "));;
     setValue("game_data.summary", previewData.summary);
 

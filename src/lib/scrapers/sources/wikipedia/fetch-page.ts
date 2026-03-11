@@ -1,4 +1,3 @@
-// src/lib/scrapers/wikipedia/fetch-page.ts
 import * as cheerio from "cheerio";
 
 export async function fetchWikipediaPage(url: string) {

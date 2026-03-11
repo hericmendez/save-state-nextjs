@@ -97,7 +97,11 @@ shadcn-ui-sidebar/
     │   │   │   └── scraper/
     │   │   │       ├── cover-search/
     │   │   │       │   └── route.ts
+    │   │   │       ├── game-metadata/
+    │   │   │       │   └── route.ts
     │   │   │       └── game-search/
+    │   │   │           ├── list/
+    │   │   │           │   └── route.ts
     │   │   │           └── route.ts
     │   │   ├── globals.css
     │   │   ├── icon.ico
@@ -185,6 +189,10 @@ shadcn-ui-sidebar/
     │   │   │   ├── game.ts
     │   │   │   └── user.ts
     │   │   ├── scrapers/
+    │   │   │   ├── core/
+    │   │   │   │   ├── engine.ts
+    │   │   │   │   ├── registry.ts
+    │   │   │   │   └── types.ts
     │   │   │   ├── cover-search/
     │   │   │   │   ├── client.ts
     │   │   │   │   ├── index.ts
@@ -193,12 +201,32 @@ shadcn-ui-sidebar/
     │   │   │   │   │   └── wikipedia-provider.ts
     │   │   │   │   ├── ranker.ts
     │   │   │   │   └── types.ts
-    │   │   │   └── wikipedia/
+    │   │   │   ├── registry.ts
+    │   │   │   ├── sources/
+    │   │   │   │   ├── mobygames/
+    │   │   │   │   ├── steam/
+    │   │   │   │   └── wikipedia/
+    │   │   │   │       ├── fetch-page.ts
+    │   │   │   │       ├── parse-infobox.ts
+    │   │   │   │       ├── parse-summary.ts
+    │   │   │   │       ├── scraper.ts
+    │   │   │   │       └── search.ts
+    │   │   │   ├── wikipedia/
+    │   │   │   │   ├── fetch-page.ts
+    │   │   │   │   ├── find-game-page.ts
+    │   │   │   │   ├── metadata.ts
+    │   │   │   │   ├── parse-infobox.ts
+    │   │   │   │   ├── parse-summary.ts
+    │   │   │   │   ├── scraper.ts
+    │   │   │   │   ├── search-games.ts
+    │   │   │   │   └── types.ts
+    │   │   │   └── wikipedia copy/
     │   │   │       ├── fetch-page.ts
     │   │   │       ├── find-game-page.ts
     │   │   │       ├── metadata.ts
     │   │   │       ├── parse-infobox.ts
     │   │   │       ├── parse-summary.ts
+    │   │   │       ├── search-games.ts
     │   │   │       └── types.ts
     │   │   └── utils.ts
     │   ├── providers/
