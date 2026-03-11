@@ -136,203 +136,203 @@ export default function BacklogFormFields() {
 
       <div className="flex flex-col gap-5 ">
         <Card className="p-5 w-100">
-        <CardHeader>
-          <CardTitle>Dados do jogo</CardTitle>
-          <CardDescription>
+          <CardHeader>
+            <CardTitle>Dados do jogo</CardTitle>
+            <CardDescription>
               Metadados do jogo obtidos via scraping.
-          </CardDescription>
-        </CardHeader>
+            </CardDescription>
+          </CardHeader>
 
-        <CardContent>
+          <CardContent>
 
 
-          <Controller
+            <Controller
               name="game_data.name"
-            control={control}
-            render={({ field, fieldState }) => (
-              <div >
-                <Field className="pb-5" data-invalid={fieldState.invalid}>
-                  <FieldLabel>Nome do jogo</FieldLabel>
-                  <div className="flex md-flex-row gap-3">
-                    <Input {...field} className="w-[90%]" />
-                    <Button type="button"
-                      variant="secondary"
-                      className="w-[10%]"
-                      onClick={handleFetchPreview}
-                      disabled={loading || !gameName}>      {loading ? '...' : <Search />}</Button>
+              control={control}
+              render={({ field, fieldState }) => (
+                <div >
+                  <Field className="pb-5" data-invalid={fieldState.invalid}>
+                    <FieldLabel>Nome do jogo</FieldLabel>
+                    <div className="flex md-flex-row gap-3">
+                      <Input {...field} className="w-[90%]" />
+                      <Button type="button"
+                        variant="secondary"
+                        className="w-[10%]"
+                        onClick={handleFetchPreview}
+                        disabled={loading || !gameName}>      {loading ? '...' : <Search />}</Button>
 
-                  </div>
+                    </div>
 
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-
-
-              </Field>
-
-              </div>
-            )}
-          />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
 
 
-          <Controller
+                  </Field>
+
+                </div>
+              )}
+            />
+
+
+            <Controller
               name="game_data.developers"
-            control={control}
+              control={control}
               render={({ field }) => (
                 <Field className="pb-5">
                   <FieldLabel>Desenvolvedores</FieldLabel>
                   <Input {...field}
                   />
-              </Field>
-            )}
-          />
+                </Field>
+              )}
+            />
 
-          <Controller
+            <Controller
               name="game_data.publishers"
-            control={control}
+              control={control}
               render={({ field }) => (
                 <Field className="pb-5">
                   <FieldLabel>Publishers</FieldLabel>
                   <Input {...field} />
-              </Field>
-            )}
-          />
-          <Controller
+                </Field>
+              )}
+            />
+            <Controller
               name="game_data.genres"
-            control={control}
+              control={control}
               render={({ field }) => (
                 <Field className="pb-5">
                   <FieldLabel>Gêneros</FieldLabel>
                   <Input {...field}
                   />
-              </Field>
-            )}
-          />
+                </Field>
+              )}
+            />
             <Controller
               name="game_data.platforms"
-            control={control}
+              control={control}
               render={({ field }) => (
                 <Field className="pb-5">
                   <FieldLabel>Platforms</FieldLabel>
                   <Input {...field} />
-              </Field>
-            )}
+                </Field>
+              )}
             />
-          <Controller
+            <Controller
               name="game_data.release_date"
-            control={control}
-            render={({ field }) => (
-              <Field className="pb-5">
-                <FieldLabel>Ano de lançamento</FieldLabel>
-                <Input
-                  type="text"
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value ? String(e.target.value) : undefined
-                    )
-                  }
-                />
-              </Field>
-            )}
-          />
-
-
-          <Controller
-            name="game_data.cover"
-            control={control}
-            render={({ field }) => (
-              <Field className="pb-5">
-                <FieldLabel>Capa do jogo</FieldLabel>
-                <GameCoverSearch
-                  query={gameName}
-                  value={field.value}
-                  onChange={field.onChange}
-                />
-              </Field>
-            )}
-          />
-
-          <Controller
-            name="game_data.summary"
-            control={control}
-            render={({ field }) => (
-              <Field className="pb-5">
-                <FieldLabel>Resumo</FieldLabel>
-                <InputGroup>
-                  <InputGroupTextarea
-                    {...field}
-                    rows={4}
-                    className="resize-none"
-                  />
-                  <InputGroupAddon align="block-end">
-                    <InputGroupText>
-                      {field.value?.length ?? 0}/500
-                    </InputGroupText>
-                  </InputGroupAddon>
-                </InputGroup>
-              </Field>
-            )}
-          />
-        </CardContent>
-      </Card>
-        <Card className="p-5 w-100">
-        <CardHeader>
-          <CardTitle>Dados do jogador</CardTitle>
-          <CardDescription>
-            Suas experiências e impressões gerais sobre o jogo.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Controller
-            name="player_data.status"
-            control={control}
-            render={({ field, fieldState }) => (
-              <Field className="pb-5" data-invalid={fieldState.invalid}>
-                <FieldLabel>Game status</FieldLabel>
-                <Input
-                  {...field}
-                  placeholder="Ex: jogando, zerado, dropado, etc."
-                />
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
-            )}
-          />
-
-          <Controller
-            name="player_data.hours_played"
-            control={control}
-            render={({ field, fieldState }) => (
-              <Field className="" data-invalid={fieldState.invalid}>
-                <FieldLabel>Horas jogadas</FieldLabel>
-                <div>
+              control={control}
+              render={({ field }) => (
+                <Field className="pb-5">
+                  <FieldLabel>Ano de lançamento</FieldLabel>
                   <Input
-                  type="number"
-                  min={0}
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                  placeholder="Ex: 40"
-
+                    type="text"
+                    {...field}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value ? String(e.target.value) : undefined
+                      )
+                    }
                   />
-                  {gameName && (
-                    <a
-                      href={buildHLTBSearchUrl(gameName)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-muted-foreground underline pb-5"
-                    >
-                      Ver tempo médio de <strong>{gameName || "Game"}  </strong> no HowLongToBeat
-                    </a>
+                </Field>
+              )}
+            />
+
+
+            <Controller
+              name="game_data.cover"
+              control={control}
+              render={({ field }) => (
+                <Field className="pb-5">
+                  <FieldLabel>Capa do jogo</FieldLabel>
+                  <GameCoverSearch
+                    query={gameName}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="game_data.summary"
+              control={control}
+              render={({ field }) => (
+                <Field className="pb-5">
+                  <FieldLabel>Resumo</FieldLabel>
+                  <InputGroup>
+                    <InputGroupTextarea
+                      {...field}
+                      rows={4}
+                      className="resize-none"
+                    />
+                    <InputGroupAddon align="block-end">
+                      <InputGroupText>
+                        {field.value?.length ?? 0}/500
+                      </InputGroupText>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </Field>
+              )}
+            />
+          </CardContent>
+        </Card>
+        <Card className="p-5 w-100">
+          <CardHeader>
+            <CardTitle>Dados do jogador</CardTitle>
+            <CardDescription>
+              Suas experiências e impressões gerais sobre o jogo.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Controller
+              name="player_data.status"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field className="pb-5" data-invalid={fieldState.invalid}>
+                  <FieldLabel>Game status</FieldLabel>
+                  <Input
+                    {...field}
+                    placeholder="Ex: jogando, zerado, dropado, etc."
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
                   )}
-                </div>
+                </Field>
+              )}
+            />
+
+            <Controller
+              name="player_data.hours_played"
+              control={control}
+              render={({ field, fieldState }) => (
+                <Field className="" data-invalid={fieldState.invalid}>
+                  <FieldLabel>Horas jogadas</FieldLabel>
+                  <div>
+                    <Input
+                      type="number"
+                      min={0}
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      placeholder="Ex: 40"
+
+                    />
+                    {gameName && (
+                      <a
+                        href={buildHLTBSearchUrl(gameName)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-muted-foreground underline pb-5"
+                      >
+                        Ver tempo médio de <strong>{gameName || "Game"}  </strong> no HowLongToBeat
+                      </a>
+                    )}
+                  </div>
 
 
-                {fieldState.invalid && (
-                  <FieldError errors={[fieldState.error]} />
-                )}
-              </Field>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
 
               )}
             />
@@ -357,65 +357,65 @@ export default function BacklogFormFields() {
 
                     />
                   </Field>
-            )}
-          />
+                )}
+              />
 
-          <Controller
-            name="player_data.rating"
-            control={control}
-            render={({ field }) => (
-              <Field className="py-5">
-                <FieldLabel>Sua nota (0–10)</FieldLabel>
-                <Input
-                  type="number"
-                  min={0}
-                  max={10}
-                  step={0.5}
-                  {...field}
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value === "" ? undefined : Number(e.target.value)
-                    )
-                  }
-                  placeholder="Ex: 8.5"
-                />
-              </Field>
-            )}
-          />
+              <Controller
+                name="player_data.rating"
+                control={control}
+                render={({ field }) => (
+                  <Field className="py-5">
+                    <FieldLabel>Sua nota (0–10)</FieldLabel>
+                    <Input
+                      type="number"
+                      min={0}
+                      max={10}
+                      step={0.5}
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value === "" ? undefined : Number(e.target.value)
+                        )
+                      }
+                      placeholder="Ex: 8.5"
+                    />
+                  </Field>
+                )}
+              />
             </div>
 
 
-          <Controller
-            name="player_data.review"
-            control={control}
-            render={({ field }) => (
-              <Field className="pb-5">
-                <FieldLabel>Review pessoal</FieldLabel>
-                <InputGroup>
-                  <InputGroupTextarea
-                    {...field}
-                    rows={5}
-                    className="resize-none"
-                    placeholder="O que você achou do jogo?"
-                  />
-                  <InputGroupAddon align="block-end">
-                    <InputGroupText>
-                      {field.value?.length ?? 0}/500
-                    </InputGroupText>
-                  </InputGroupAddon>
-                </InputGroup>
-                <FieldDescription>
-                  Impressões pessoais, sem compromisso com a crítica.
-                </FieldDescription>
-              </Field>
-            )}
-          />
-          <Controller
+            <Controller
+              name="player_data.review"
+              control={control}
+              render={({ field }) => (
+                <Field className="pb-5">
+                  <FieldLabel>Review pessoal</FieldLabel>
+                  <InputGroup>
+                    <InputGroupTextarea
+                      {...field}
+                      rows={5}
+                      className="resize-none"
+                      placeholder="O que você achou do jogo?"
+                    />
+                    <InputGroupAddon align="block-end">
+                      <InputGroupText>
+                        {field.value?.length ?? 0}/500
+                      </InputGroupText>
+                    </InputGroupAddon>
+                  </InputGroup>
+                  <FieldDescription>
+                    Impressões pessoais, sem compromisso com a crítica.
+                  </FieldDescription>
+                </Field>
+              )}
+            />
+            <Controller
               name="player_data.listIds"
-            control={control}
+              control={control}
               render={({ field }: any) => (
                 <Field className="w-full">
-                <FieldLabel>Adicionar à lista</FieldLabel>
+                  <FieldLabel>Adicionar à lista</FieldLabel>
                   <div className="flex flex-row gap-3">
                     <div className="w-[90%]">
                       <Select
@@ -424,18 +424,18 @@ export default function BacklogFormFields() {
                       >
                         <SelectTrigger >
                           <SelectValue placeholder="Escolha uma lista" />
-                  </SelectTrigger>
+                        </SelectTrigger>
                         <SelectContent >
                           <SelectGroup >
-                      {lists.map((list) => (
-                        <SelectItem key={list._id} value={list._id}>
-                          {list.name}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
+                            {lists.map((list) => (
+                              <SelectItem key={list._id} value={list._id}>
+                                {list.name}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
 
-                </Select>
+                      </Select>
 
                     </div>
                     <div className="w-[10%]">
@@ -448,13 +448,13 @@ export default function BacklogFormFields() {
                   </div>
 
 
-              </Field>
+                </Field>
 
-            )}
+              )}
 
-          />
-        </CardContent>
-      </Card>
+            />
+          </CardContent>
+        </Card>
       </div>
 
       {/* ===== PREVIEW DIALOG ===== */}

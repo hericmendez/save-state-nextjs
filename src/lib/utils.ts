@@ -11,8 +11,3 @@ export function buildHLTBSearchUrl(gameName: string) {
 }
 
 
-type GameList = {
-  _id: string
-  name: string
-}
-

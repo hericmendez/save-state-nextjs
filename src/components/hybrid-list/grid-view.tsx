@@ -1,4 +1,5 @@
 //src/app/components/hybrid-list/grid-view.tsx
+//talvez eu mantenha como fallback do infinite scroll
 "use client";
 
 import Image from "next/image";

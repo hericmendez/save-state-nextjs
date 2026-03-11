@@ -28,6 +28,8 @@ export async function wikipediaCoverProvider(
     "&srsearch=" +
     encodeURIComponent(`${query} video game`) +
     "&srlimit=8" +
+    "&prop=pageimages" +
+    "&pithumbsize=500" +
     "&format=json";
 
   const searchRes = await fetch(searchApi, {

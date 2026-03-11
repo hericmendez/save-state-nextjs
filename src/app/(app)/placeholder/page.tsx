@@ -12,7 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator
 } from "@/components/ui/breadcrumb";
-import GameCoverSearch from "@/components/game-cover-search-test";
+
 
 export default function PlaceholderPage() {
   return (

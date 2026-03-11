@@ -16,11 +16,19 @@ export async function searchGameCovers(
   // aplica score individual
   const ranked = results.map((result) => ({
     ...result,
-    confidence: scoreWikiResult(result.title, input.query)
+    confidence: scoreWikiResult(result.title, input.query) ?? 0
   }));
 
   // ordena do mais relevante pro menos
-  ranked.sort((a, b) => b.confidence - a.confidence);
+  ranked.sort((a, b) => b?.confidence - a?.confidence);
 
   return ranked;
+}
+
+export async function getCoverForGame(title: string) {
+  const results = await wikipediaCoverProvider(title);
+
+  if (!results.length) return null;
+
+  return results[0].url;
 }

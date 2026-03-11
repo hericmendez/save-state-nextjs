@@ -1,4 +1,4 @@
-// src/lib/scrapers/wikipedia/types.ts
+
 export type GameSearchResult = {
   title: string
   url: string

@@ -1,4 +1,6 @@
-import { GameSearchResult } from "@/lib/scrapers/core/types"
+// src/lib/scrapers/sources/wikipedia/search.ts
+
+import { SearchResult } from "@/lib/scrapers/core/types"
 
 type WikiSearchResponse = {
   query?: {
@@ -10,9 +12,30 @@ type WikiSearchResponse = {
   }
 }
 
+function normalize(title: string) {
+  return title.toLowerCase()
+}
+
+function isLikelyGame(title: string) {
+  const t = normalize(title)
+
+  const blacklist = [
+    "list of",
+    "disambiguation",
+    "(band)",
+    "(film)",
+    "video games in",
+    "history of",
+    "company",
+    "publisher"
+  ]
+
+  return !blacklist.some(term => t.includes(term))
+}
+
 export async function searchWikipediaGames(
   query: string
-): Promise<GameSearchResult[]> {
+): Promise<SearchResult[]> {
 
   const api =
     "https://en.wikipedia.org/w/api.php" +
@@ -20,7 +43,7 @@ export async function searchWikipediaGames(
     "&list=search" +
     "&srsearch=" +
     encodeURIComponent(`${query} video game`) +
-    "&srlimit=10" +
+    "&srlimit=100" +
     "&format=json"
 
   const res = await fetch(api)
@@ -30,9 +53,11 @@ export async function searchWikipediaGames(
   const data = (await res.json()) as WikiSearchResponse
   const pages = data.query?.search ?? []
 
-  return pages.map(p => ({
-    title: p.title,
-    url: `https://en.wikipedia.org/?curid=${p.pageid}`,
-    source: "wikipedia"
-  }))
+  return pages
+    .filter(p => isLikelyGame(p.title))
+    .map(p => ({
+      title: p.title,
+      url: `https://en.wikipedia.org/?curid=${p.pageid}`,
+      source: "wikipedia"
+    }))
 }
